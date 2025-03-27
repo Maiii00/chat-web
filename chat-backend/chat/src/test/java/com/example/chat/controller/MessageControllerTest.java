@@ -11,6 +11,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -21,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.example.chat.model.Message;
 import com.example.chat.service.MessageService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(MessageController.class)
 class MessageControllerTest {
@@ -31,17 +33,26 @@ class MessageControllerTest {
     @MockitoBean
     private MessageService messageService;
 
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Test
     void testSendMessage() throws Exception {
         Message message = new Message("Alice", "Bob", "Hi!", LocalDateTime.now());
         when(messageService.saveMessage(any(), any(), any())).thenReturn(message);
 
+        // JSON 格式的請求內容
+        String jsonRequest = objectMapper.writeValueAsString(message);
+
         // 發送 POST 請求，並驗證回應
         mockMvc.perform(post("/api/messages")
-                .param("sender", "Alice")
-                .param("receiver", "Bob")
-                .param("content", "Hi!"))
-                .andExpect(status().isOk());
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonRequest))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.sender").value("Alice"))
+                .andExpect(jsonPath("$.receiver").value("Bob"))
+                .andExpect(jsonPath("$.content").value("Hi!"));
             
     }
 
@@ -56,7 +67,7 @@ class MessageControllerTest {
                 .param("sender", "Alice")
                 .param("receiver", "Bob"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2));    
+                .andExpect(jsonPath("$.size()").value(2));    
     }
 
     @Test

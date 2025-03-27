@@ -19,8 +19,8 @@ public class MessageController {
 
     // 送出訊息
     @PostMapping
-    public Message sendMessage(@RequestParam String sender, @RequestParam String receiver, @RequestParam String content) {
-        return messageService.saveMessage(sender, receiver, content);
+    public Message sendMessage(@RequestBody Message message) {
+        return messageService.saveMessage(message.getSender(), message.getReceiver(), message.getContent());
     }
 
     // 查詢歷史訊息
