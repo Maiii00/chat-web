@@ -1,0 +1,8 @@
+<div class="chat-container">
+    <h2>聊天室</h2>
+    <div class="messages">
+        <div *ngFor="let msg of messages" class="message">{{ msg }}</div>
+    </div>
+    <input [(ngModel)]="messageInput" placeholder="輸入訊息..." (keypress.enter)="sendMessage()" />
+    <button (click)="sendMessage()">發送</button>
+</div>
