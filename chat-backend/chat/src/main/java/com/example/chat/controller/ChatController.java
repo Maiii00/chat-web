@@ -1,30 +1,41 @@
 package com.example.chat.controller;
 
-import java.time.LocalDateTime;
+import java.util.Set;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import com.example.chat.model.Message;
+import com.example.chat.service.GroupService;
 import com.example.chat.service.MessageService;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 @Controller
 public class ChatController {
 
     private final MessageService messageService;
+    private final GroupService groupService;
+    private final SimpMessagingTemplate messagingTemplate; // WebSocket 訊息推送工具
 
-    public ChatController(MessageService messageService) {
-        this.messageService = messageService;
+    @MessageMapping("/group") // 客戶端發送到 "/app/group"
+    public void sendToGroup(@Payload Message message) {
+        messageService.saveMessage(message);
+
+        Set<String> members = groupService.getGroupMembers(message.getReceiverId());
+        for (String member : members) {
+            messagingTemplate.convertAndSendToUser(member, "/queue/messages", message);
+        }
     }
 
-    @MessageMapping("/chat") // 接收來自 "/app/chat" 的訊息
-    @SendTo("/topic/messages") // 推播訊息給訂閱 "/topic/messages" 的客戶端
-    public Message sendMessage(@Payload Message message) {
-        message.setTimestamp(LocalDateTime.now());
+    // 私聊
+    @MessageMapping("/private") // 客戶端發送到 "/app/private"
+    public void sendToUser(@Payload Message message) {
+        messageService.saveMessage(message);
 
-        Message savedMessage = messageService.saveMessage(message.getSender(), message.getReceiver(), message.getContent());
-        // 儲存到資料庫
-        return savedMessage;
+        // 只發送給指定的用戶 "/user/{receiver}/queue/messages"
+        messagingTemplate.convertAndSendToUser(message.getReceiverId(), "/queue/messages", message);
     }
 }
