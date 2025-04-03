@@ -6,12 +6,11 @@ import com.example.chat.service.UnreadMessageService;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -32,13 +31,13 @@ public class MessageController {
 
     // 查詢歷史訊息(分頁)
     @GetMapping("/history")
-    public ResponseEntity<Page<Message>> getChatHistory(
+    public ResponseEntity<List<Message>> getPrivateChatHistory(
         @RequestParam String user1, 
         @RequestParam String user2,
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "20") int size) {
         
-        Page<Message> messages = messageService.getChatHistory(user1, user2, PageRequest.of(page, size));
+        List<Message> messages = messageService.getPrivateChatHistory(user1, user2, page, size);
         return ResponseEntity.ok(messages);
     }
 
@@ -48,15 +47,22 @@ public class MessageController {
         return ResponseEntity.ok(messageService.getMessageById(id));
     }
 
-    // 刪除訊息
+    // 私聊刪除訊息
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMessage(@PathVariable String id) {
-        messageService.deleteMessage(id);
-        messagingTemplate.convertAndSend("/topic/delete", id);
+    public ResponseEntity<Void> deletePrivateMessage(@PathVariable String id) {
+        Optional<Message> messageOptional = messageService.getMessageById(id);
+        messageOptional.ifPresent(message -> {
+            messageService.deleteMessage(id);
+
+            // 通知 sender 和 receiver
+            messagingTemplate.convertAndSendToUser(message.getSenderId(), "/queue/delete", id);
+            messagingTemplate.convertAndSendToUser(message.getReceiverId(), "/queue/delete", id);
+        });
+
         return ResponseEntity.noContent().build();
     }
 
-    //取得用戶未讀訊息數量
+    // 取得用戶未讀訊息數量
     @GetMapping("/{userId}/unread-count")
     public ResponseEntity<Integer> getUnreadCount(@PathVariable String userId) {
         int count = unreadMessageService.getUnreadCount(userId);
@@ -64,11 +70,17 @@ public class MessageController {
     }
     
 
-    // 標記訊息為已讀
+    // 私聊標記訊息為已讀
     @PostMapping("/read/{id}")
-    public ResponseEntity<Void> markMessageAsRead(@PathVariable String id) {
-        messageService.markMessageAsRead(id);
-        messagingTemplate.convertAndSend("/topic/read", id);
+    public ResponseEntity<Void> markPrivateMessageAsRead(@PathVariable String id) {
+        Optional<Message> messageOptional = messageService.getMessageById(id);
+        messageOptional.ifPresent(message -> {
+            messageService.markMessageAsRead(id);
+
+            // 通知 sender
+            messagingTemplate.convertAndSendToUser(message.getSenderId(), "/queue/read", id);
+        });
+
         return ResponseEntity.noContent().build();
     }
 }

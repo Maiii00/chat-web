@@ -15,8 +15,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(@NonNull MessageBrokerRegistry registry) {
         // 啟用訊息代理
-        registry.enableSimpleBroker("/topic"); // 用於訂閱推播訊息
-        registry.setApplicationDestinationPrefixes("/app"); // 設定前綴，傳送訊息時用
+        registry.enableSimpleBroker("/topic", "/queue");
+        // 設定前綴，客戶端要發送訊息時，目的地是 "/app"
+        registry.setApplicationDestinationPrefixes("/app");
+        // 啟用 "/user/queue/"，讓特定用戶可以接收點對點訊息
+        registry.setUserDestinationPrefix("/user");
     }
 
     @Override
