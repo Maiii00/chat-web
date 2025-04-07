@@ -1,0 +1,30 @@
+<div class="chat-container">
+    <header class="chat-header">
+        <h2>{{ receiverId }}</h2>
+    </header>
+
+    <section class="chat-messages" #chatMessages>
+        <div 
+            *ngFor="let msg of messages" 
+            class="chat-message" 
+            [ngClass]="{ 'own-message': msg.senderId === senderId }"
+        >
+            <div class="message-bubble">
+                <span class="content">{{ msg.content }}</span>
+                <span class="timestamp">{{ msg.timestamp | date: 'shortTime'}}</span>
+                <span class="read-status" *ngIf="msg.senderId === senderId">
+                    {{ msg.read ? '✓' : '' }}
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <footer class="chat-input">
+        <input 
+            [(ngModel)]="newMessage" 
+            (keydown.enter)="sendMessage()"
+            type="text" 
+            placeholder="輸入訊息..." />
+        <button (click)="sendMessage()">發送</button>
+    </footer>
+</div>

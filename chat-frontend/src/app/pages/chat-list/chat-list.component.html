@@ -1,0 +1,13 @@
+<div class="chat-list">
+    <h2>聊天室</h2>
+    <div
+        *ngFor="let convo of conversations"
+        class="chat-preview"
+        (click)="openChat(convo.userId)"
+    >
+        <div class="chat-username">{{ convo.username }}</div>
+        <div class="chat-unread" *ngIf="convo.unreadCount > 0">
+            {{ getUnread(convo.userId) }}
+        </div>
+    </div>
+</div>
