@@ -24,7 +24,13 @@ public class SecurityConfig {
         return http
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/users/login", "/api/users/register", "/api/users/refresh").permitAll()
+                .requestMatchers(
+                    "/api/users/login", 
+                    "/api/users/register", 
+                    "/api/users/refresh",
+                    "/api/messages/**",
+                    "/ws/**"
+                ).permitAll()
                 // 其他所有請求都需要經過身份驗證
                 .anyRequest().authenticated()
             )

@@ -1,5 +1,6 @@
 package com.example.chat.service;
 
+import com.example.chat.dto.ConversationDTO;
 import com.example.chat.model.Message;
 import com.example.chat.repository.MessageRepository;
 import com.example.chat.repository.UserRepository;
@@ -16,7 +17,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -32,7 +35,7 @@ public class MessageService {
     public Message saveMessage(Message message) {
         validateUsers(message.getSenderId(), message.getReceiverId()); // 確認發送者與接收者存在
         Message savedMessage = messageRepository.save(message);
-        unreadMessageService.incrementUnreadCount(message.getReceiverId()); // 增加未讀訊息數
+        unreadMessageService.incrementUnreadCount(message.getSenderId(), message.getReceiverId()); // 增加未讀訊息數
 
         // 快取到 Redis
         chatCacheService.cacheMessage(savedMessage);
@@ -76,12 +79,35 @@ public class MessageService {
         return messageRepository.findById(id);
     }
 
+    // 取得用戶的聊天列表，包含所有發送者及對應的未讀數量
+    public List<ConversationDTO> getMessageList(String receiverId) {
+        // 從 Redis 中取得所有發送者的未讀數量 map（key: senderId, value: count）
+        Map<Object, Object> unreadMap = unreadMessageService.getAllUnreadCount(receiverId);
+        List<ConversationDTO> result = new ArrayList<>();
+
+        for (Map.Entry<Object, Object> entry : unreadMap.entrySet()) {
+            String senderId = (String) entry.getKey();
+            int count = (int) entry.getValue();
+
+            // 根據 senderId 查詢使用者資料，若存在則封裝成 ConversationDTO 回傳
+            userRepository.findById(senderId).ifPresent(sender -> {
+                result.add(new ConversationDTO(
+                    sender.getId(),
+                    sender.getUsername(),
+                    count
+                ));
+            });
+        }
+
+        return result;
+    }
+
     // 刪除訊息（刪 MongoDB + Redis）
     public void deleteMessage(String id) {
         Optional<Message> messageOptional = messageRepository.findById(id);
         messageOptional.ifPresent(message -> {
             messageRepository.deleteById(id);
-            unreadMessageService.clearUnreadCount(message.getReceiverId());
+            unreadMessageService.clearUnreadCount(message.getSenderId(), message.getReceiverId());
 
             // 刪除 Redis 快取
             chatCacheService.clearChatCache(message);
@@ -94,7 +120,7 @@ public class MessageService {
         messageOptional.ifPresent(message -> {
             message.setRead(true);
             messageRepository.save(message);
-            unreadMessageService.clearUnreadCount(message.getReceiverId());
+            unreadMessageService.clearUnreadCount(message.getSenderId(), message.getReceiverId());
         });
     }
 

@@ -63,7 +63,7 @@ class MessageServiceTest {
         verify(userRepository, times(1)).existsById("Alice");
         verify(userRepository, times(1)).existsById("Bob");
         verify(messageRepository, times(1)).save(any(Message.class));
-        verify(unreadMessageService, times(1)).incrementUnreadCount(eq("Bob"));
+        verify(unreadMessageService, times(1)).incrementUnreadCount(eq("Alice"), eq("Bob"));
         verify(chatCacheService, times(1)).cacheMessage(any(Message.class));  // 確認訊息有快取到 Redis
     }
 
@@ -115,7 +115,7 @@ class MessageServiceTest {
         messageService.deleteMessage("123");
         
         verify(messageRepository, times(1)).deleteById("123");
-        verify(unreadMessageService, times(1)).clearUnreadCount("Bob");
+        verify(unreadMessageService, times(1)).clearUnreadCount(eq("Alice"), eq("Bob"));
         verify(chatCacheService, times(1)).clearChatCache(any(Message.class)); // 確認 Redis 也刪除了
     }
 
@@ -134,6 +134,6 @@ class MessageServiceTest {
 
         verify(messageRepository, times(1)).findById("456");
         verify(messageRepository, times(1)).save(any(Message.class));
-        verify(unreadMessageService, times(1)).clearUnreadCount(eq("Bob"));
+        verify(unreadMessageService, times(1)).clearUnreadCount(eq("Alice"), eq("Bob"));
     }
 }

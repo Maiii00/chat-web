@@ -28,7 +28,7 @@ class UserRepositoryTest {
     void testFindByUsername() {
         User user = new User();
         user.setUsername("testUser");
-        user.setEmail("test@example.com");
+        // user.setEmail("test@example.com");
         user.setPassword("password");
         user.setOnline(false);
 

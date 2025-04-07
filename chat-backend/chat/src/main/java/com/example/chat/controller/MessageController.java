@@ -1,5 +1,6 @@
 package com.example.chat.controller;
 
+import com.example.chat.dto.ConversationDTO;
 import com.example.chat.model.Message;
 import com.example.chat.service.MessageService;
 import com.example.chat.service.UnreadMessageService;
@@ -47,6 +48,12 @@ public class MessageController {
         return ResponseEntity.ok(messageService.getMessageById(id));
     }
 
+    // 查詢用戶的聊天列表（含未讀數）
+    @GetMapping("/chat-list/{receiverId}")
+    public ResponseEntity<List<ConversationDTO>> getMessageList(@PathVariable String receiverId) {
+        return ResponseEntity.ok(messageService.getMessageList(receiverId));
+    }
+
     // 私聊刪除訊息
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePrivateMessage(@PathVariable String id) {
@@ -64,11 +71,10 @@ public class MessageController {
 
     // 取得用戶未讀訊息數量
     @GetMapping("/{userId}/unread-count")
-    public ResponseEntity<Integer> getUnreadCount(@PathVariable String userId) {
-        int count = unreadMessageService.getUnreadCount(userId);
+    public ResponseEntity<Integer> getUnreadCount(@PathVariable String senderId, @PathVariable String receiverId) {
+        int count = unreadMessageService.getUnreadCount(senderId, receiverId);
         return ResponseEntity.ok(count);
     }
-    
 
     // 私聊標記訊息為已讀
     @PostMapping("/read/{id}")

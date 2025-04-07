@@ -40,7 +40,7 @@ class UserServiceTest {
     void setUp() {
         user = new User();
         user.setUsername("testUser");
-        user.setEmail("test@example.com");
+        // user.setEmail("test@example.com");
         user.setPassword("password");
     }
 
@@ -93,7 +93,7 @@ class UserServiceTest {
     void testInvalidPassword() {
         User storedUser = new User();
         storedUser.setUsername("testUser");
-        storedUser.setEmail("test@example.com");
+        // storedUser.setEmail("test@example.com");
         storedUser.setPassword("wrongPassword");
         storedUser.setOnline(false);
 
