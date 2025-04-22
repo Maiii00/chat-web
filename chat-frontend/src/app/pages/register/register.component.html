@@ -1,0 +1,8 @@
+<h2>註冊</h2>
+<form (ngSubmit)="register()">
+    <input type="text" [(ngModel)]="username" name="username" placeholder="帳號" required />
+    <input type="password" [(ngModel)]="password" name="password" placeholder="密碼" required />
+    <input type="password" [(ngModel)]="confirmPassword" name="confirmPassword" placeholder="再次確認密碼" required />
+    <button type="submit">註冊</button>
+</form>
+<a routerLink="/login">已有帳號?登入</a>

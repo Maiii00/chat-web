@@ -6,6 +6,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
 import com.example.chat.model.Message;
+import java.util.List;
+
 
 public interface MessageRepository extends MongoRepository<Message, String> {
 
@@ -17,4 +19,6 @@ public interface MessageRepository extends MongoRepository<Message, String> {
     Page<Message> findChatHistory(
         String userId1, String userId2, Pageable pageable
     );
+
+    List<Message> findBySenderIdOrReceiverId(String senderId, String receiverId);
 }

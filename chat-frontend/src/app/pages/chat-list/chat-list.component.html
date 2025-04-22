@@ -6,8 +6,5 @@
         (click)="openChat(convo.userId)"
     >
         <div class="chat-username">{{ convo.username }}</div>
-        <div class="chat-unread" *ngIf="convo.unreadCount > 0">
-            {{ getUnread(convo.userId) }}
-        </div>
     </div>
 </div>

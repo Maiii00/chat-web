@@ -1,6 +1,6 @@
 <div class="chat-container">
     <header class="chat-header">
-        <h2>{{ receiverId }}</h2>
+        <h2>{{ receiverUsername }}</h2>
     </header>
 
     <section class="chat-messages" #chatMessages>
@@ -11,20 +11,16 @@
         >
             <div class="message-bubble">
                 <span class="content">{{ msg.content }}</span>
-                <span class="timestamp">{{ msg.timestamp | date: 'shortTime'}}</span>
-                <span class="read-status" *ngIf="msg.senderId === senderId">
-                    {{ msg.read ? '✓' : '' }}
-                </span>
             </div>
         </div>
     </section>
 
     <footer class="chat-input">
-        <input 
+        <textarea
             [(ngModel)]="newMessage" 
-            (keydown.enter)="sendMessage()"
-            type="text" 
-            placeholder="輸入訊息..." />
+            (keydown)="handleKeyDown($event)"
+            rows="2"
+            placeholder="輸入訊息..."></textarea>
         <button (click)="sendMessage()">發送</button>
     </footer>
 </div>

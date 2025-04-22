@@ -31,8 +31,8 @@ class MessageRepositoryTest {
     void setUpMessages() {
         messageRepository.deleteAll();
 
-        msg1 = new Message("Alice", "Bob", "Hi!", false);
-        msg2 = new Message("Alice", "Bob", "Hello!", false);
+        msg1 = new Message("Alice", "Bob", "Hi!");
+        msg2 = new Message("Alice", "Bob", "Hello!");
 
         messageRepository.saveAll(List.of(msg1, msg2));
     }
@@ -44,7 +44,7 @@ class MessageRepositoryTest {
 
     @Test
     void saveAndRetrieveMessageTest() {
-        Message msg = new Message("Alice", "Bob", "Hi!", false);
+        Message msg = new Message("Alice", "Bob", "Hi!");
         Message savedMsg = messageRepository.save(msg);
 
         Optional<Message> retrievedMsg = messageRepository.findById(savedMsg.getId());

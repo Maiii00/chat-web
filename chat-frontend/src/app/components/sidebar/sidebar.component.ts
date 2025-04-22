@@ -1,20 +1,19 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { ChatStateService } from '../../services/chat-state.service';
 import { Conversation } from '../../models/conversation';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
-  selector: 'app-chat-list',
+  selector: 'app-sidebar',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl: './chat-list.component.html',
-  styleUrls: ['./chat-list.component.scss']
+  templateUrl: './sidebar.component.html',
+  styleUrls: ['./sidebar.component.scss']
 })
-export class ChatListComponent implements OnInit {
-
+export class SidebarComponent implements OnInit {
   private chatState = inject(ChatStateService);
   private http = inject(HttpClient);
   private router = inject(Router);
@@ -27,6 +26,11 @@ export class ChatListComponent implements OnInit {
     this.sender = this.auth.getUsername();
     if (this.sender) {
       this.loadConversations();
+
+      // 訂閱聊天列表變動通知
+      this.chatState.conversationUpdated$.subscribe(() => {
+        this.loadConversations();
+      });
     } else {
       console.warn('senderId is null');
     }

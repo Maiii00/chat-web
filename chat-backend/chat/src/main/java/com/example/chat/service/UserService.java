@@ -1,6 +1,7 @@
 package com.example.chat.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -42,13 +43,28 @@ public class UserService {
         }
         
         // 生成 JWT 並返回
-        String accessToken = jwtUtil.generateAccessToken(user.getUsername());
-        String refreshToken = jwtUtil.generateRefreshToken(user.getUsername());
+        String accessToken = jwtUtil.generateAccessToken(user);
+        String refreshToken = jwtUtil.generateRefreshToken(user);
 
         // 返回 Token
         Map<String, String> tokens = new HashMap<>();
         tokens.put("accessToken", accessToken);
         tokens.put("refreshToken", refreshToken);
         return tokens;
+    }
+
+    // 獲取userid
+    public Optional<User> findById(String id) {
+        return userRepository.findById(id);
+    }
+
+    // 獲取username
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+        
+    // 查詢用戶
+    public List<User> searchUsers(String keyword) {
+        return userRepository.findByUsernameContainingIgnoreCase(keyword);
     }
 }

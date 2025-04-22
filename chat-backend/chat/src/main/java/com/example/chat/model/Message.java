@@ -1,8 +1,5 @@
 package com.example.chat.model;
 
-import java.time.LocalDateTime;
-
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -25,15 +22,9 @@ public class Message {
 
     private String content;
 
-    @CreatedDate
-    private LocalDateTime timestamp;
-
-    private boolean read;
-
-    public Message(String senderId, String receiverId, String content, boolean read) {
+    public Message(String senderId, String receiverId, String content) {
         this.senderId = senderId;
         this.receiverId = receiverId;
         this.content = content;
-        this.read = false;
     }
 }

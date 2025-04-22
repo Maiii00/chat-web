@@ -19,5 +19,4 @@ public class User {
 
     // private String email;
     private String password;
-    private boolean online; // 用來標示是否在線
 }

@@ -1,8 +1,5 @@
 import { Routes } from '@angular/router';
-import { ChatComponent } from './pages/chat/chat.component';
-import { LoginComponent } from './pages/login/login.component';
-import { ChatListComponent } from './pages/chat-list/chat-list.component';
-import { authGuard } from './auth/auth.guard';
+import { authGuard } from './services/auth.guard';
 
 export const routes: Routes = [
     {
@@ -28,4 +25,9 @@ export const routes: Routes = [
         path: '**',
         redirectTo: 'chat',
     },
+    {
+        path: 'register',
+        loadComponent: () => import('./pages/register/register.component').then(m => m.RegisterComponent),
+    },
+      
 ];

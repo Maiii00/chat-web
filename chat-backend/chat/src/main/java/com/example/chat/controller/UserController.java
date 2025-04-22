@@ -1,6 +1,7 @@
 package com.example.chat.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.chat.model.User;
@@ -11,10 +12,14 @@ import com.example.chat.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
+import java.security.Principal;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -58,28 +63,35 @@ public class UserController {
             String username = jwtUtil.extractUsername(refreshToken);
 
             if (jwtUtil.validateToken(refreshToken, username)) {
-                String newAccessToken = jwtUtil.generateAccessToken(username);
+                // 根據 username 查找 User 實體
+                User user = userService.findByUsername(username)
+                                        .orElseThrow(() -> new RuntimeException("User not found"));
+
+                // 產出新的 accessToken
+                String newAccessToken = jwtUtil.generateAccessToken(user);
                 return ResponseEntity.ok(Map.of("accessToken", newAccessToken));
             } else {
+                System.out.println("refreshToken 驗證失敗");
                 return ResponseEntity.status(403).body(Map.of("error", "Invalid refresh token"));
             }
         } catch (Exception e) {
+            System.out.println("refreshToken 異常：" + e.getMessage());
             return ResponseEntity.status(403).body(Map.of("error", "Token expired or invalid"));
         }
     }
     
     // 登出 API
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request) {
+    public ResponseEntity<Map<String, String>> logout(HttpServletRequest request) {
         String token = extractToken(request);
         if (token == null || jwtUtil.isTokenExpired(token)) {
-            return ResponseEntity.badRequest().body("Invalid or expired token");
+            return ResponseEntity.badRequest().body(Map.of("message","Invalid or expired token"));
         }
 
         long expirationMillis = jwtUtil.getExpirationMillis(token);
         logoutService.invalidateToken(token, expirationMillis);
 
-        return ResponseEntity.ok("Logged out successfully");
+        return ResponseEntity.ok(Map.of("message", "Logged out successfully"));
     }
 
     // 從請求頭中提取 JWT
@@ -89,5 +101,28 @@ public class UserController {
             return header.substring(7);
         }
         return null;
+    }
+
+    // 回傳username
+    @GetMapping("/{id}")
+    public ResponseEntity<Map<String, String>> getUsernameById(@PathVariable String id) {
+        return userService.findById(id)
+            .map(user -> ResponseEntity.ok(Map.of("username", user.getUsername())))
+            .orElse(ResponseEntity.notFound().build());
+    }
+
+    // 尋找用戶
+    @GetMapping("/search")
+    public ResponseEntity<List<User>> searchUsers(@RequestParam String keyword, Principal principal) {
+        if (principal == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        String currentUsername = principal.getName();
+        List<User> results = userService.searchUsers(keyword)
+                                        .stream()
+                                        .filter(user -> !user.getUsername().equals(currentUsername)) // 不回傳自己
+                                        .toList();
+        return ResponseEntity.ok(results);
     }
 }

@@ -1,0 +1,71 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #2d3748;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem 0.75rem 0.75rem 0.75rem; // 上圓角
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  .menu-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: transform 0.2s;
+  
+      &:hover {
+        transform: scale(1.1);
+      }
+  }
+
+  .logout-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+
+  .search-input {
+    padding: 0.3rem 0.75rem;
+    border-radius: 0.5rem;
+    border: none;
+    font-size: 1rem;
+    margin-left: 1rem;
+    flex: 1;
+    max-width: 200px;
+  }
+  
+  .search-dropdown {
+    position: absolute;
+    top: 60px;
+    left: 80px;
+    background: white;
+    color: black;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    list-style: none;
+    padding: 0.5rem;
+    z-index: 10;
+    width: 200px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  
+    li {
+      padding: 0.25rem 0.5rem;
+      cursor: pointer;
+  
+      &:hover {
+        background-color: #f0f0f0;
+      }
+    }
+  }    
+}
+  

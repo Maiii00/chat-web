@@ -30,7 +30,6 @@ class UserRepositoryTest {
         user.setUsername("testUser");
         // user.setEmail("test@example.com");
         user.setPassword("password");
-        user.setOnline(false);
 
         userRepository.save(user);
 
@@ -39,7 +38,6 @@ class UserRepositoryTest {
         assertTrue(foundUser.isPresent());
         assertEquals("testUser", foundUser.get().getUsername());
         assertEquals("password", foundUser.get().getPassword());
-        assertFalse(foundUser.get().isOnline());
     }
 
     @Test

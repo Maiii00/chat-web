@@ -8,7 +8,7 @@ import SockJS from 'sockjs-client';
 })
 export class WebSocketService {
   private stompClient: Client | null = null; // STOMP 客戶端實例，初始為 null
-  private messagesSubject = new BehaviorSubject<any[]>([]); // 用來存儲訊息的行為主題 (BehaviorSubject)，它會保存最近的訊息並發佈到訂閱者
+  private messagesSubject = new BehaviorSubject<Message | null>(null); // 用來存儲訊息的行為主題 (BehaviorSubject)，它會保存最近的訊息並發佈到訂閱者
 
   constructor() {
     this.connect();
@@ -27,7 +27,8 @@ export class WebSocketService {
         // 訂閱私聊訊息通道，並在收到訊息時將其加入消息隊列
         this.stompClient!.subscribe('/user/queue/messages', (message: Message) => {
           // 更新 messagesSubject，發佈新的訊息
-          this.messagesSubject.next([...this.messagesSubject.value, JSON.parse(message.body)]);
+          const parsed: Message = JSON.parse(message.body);
+          this.messagesSubject.next(parsed);
         });
     };
 

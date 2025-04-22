@@ -17,7 +17,7 @@ export class LoginComponent {
   private http = inject(HttpClient);
   private router = inject(Router);
 
-  constructor() {
+  ngOnInit() {
     const token = localStorage.getItem('accessToken');
     if (token) {
       this.router.navigate(['/']);
@@ -28,9 +28,16 @@ export class LoginComponent {
     this.http.post('/api/users/login', {
       username: this.username,
       password: this.password,
-    }).subscribe((res: any) => {
-      localStorage.setItem('accessToken', res.accessToken);
-      this.router.navigate(['/']);
+    }).subscribe({
+      next: (res: any) => {
+        localStorage.setItem('accessToken', res.accessToken);
+        localStorage.setItem('refreshToken', res.refreshToken);
+        this.router.navigate(['/']);
+      },
+      error: (err) => {
+        console.error('登入失敗', err);
+        alert(err?.error?.error || '登入失敗，請檢查帳密');
+      }
     });
   }
 }

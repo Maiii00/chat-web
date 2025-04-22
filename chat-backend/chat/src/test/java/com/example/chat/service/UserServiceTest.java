@@ -68,8 +68,8 @@ class UserServiceTest {
     @Test
     void testLogin() {
         when(userRepository.findByUsername("testUser")).thenReturn(Optional.of(user));
-        when(jwtUtil.generateAccessToken("testUser")).thenReturn("mockAccessToken");
-        when(jwtUtil.generateRefreshToken("testUser")).thenReturn("mockRefreshToken");
+        //when(jwtUtil.generateAccessToken("testUser")).thenReturn("mockAccessToken");
+        //when(jwtUtil.generateRefreshToken("testUser")).thenReturn("mockRefreshToken");
 
         Map<String, String> tokens = userService.login(user);
 
@@ -95,7 +95,6 @@ class UserServiceTest {
         storedUser.setUsername("testUser");
         // storedUser.setEmail("test@example.com");
         storedUser.setPassword("wrongPassword");
-        storedUser.setOnline(false);
 
         when(userRepository.findByUsername("testUser")).thenReturn(Optional.of(storedUser));
 
