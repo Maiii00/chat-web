@@ -34,6 +34,9 @@ public class MessageController {
         messagingTemplate.convertAndSendToUser(
             message.getReceiverId(), "/queue/messages", saved
         );
+        messagingTemplate.convertAndSendToUser(
+            message.getSenderId(), "/queue/messages", saved
+        );
     }
 
     // 送出訊息
