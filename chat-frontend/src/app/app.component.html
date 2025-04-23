@@ -1,9 +1,9 @@
 <div class="main-layout">
-  <app-navbar *ngIf="showLayout" (toggleSidebar)="toggleSidebar()"></app-navbar>
+  <app-navbar *ngIf="showLayout"></app-navbar>
 
   <div class="layout-body">
-    <div class="sidebar-container" [class.open]="showSidebar">
-      <app-sidebar></app-sidebar>
+    <div class="sidebar-container">
+      <app-chat-list></app-chat-list>
     </div>
 
     <div class="chat-content">

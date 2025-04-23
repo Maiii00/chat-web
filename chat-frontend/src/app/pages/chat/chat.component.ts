@@ -7,7 +7,7 @@ import { WebSocketService } from '../../services/websocket.service';
 import { HttpClient } from '@angular/common/http';
 import { ChatStateService } from '../../services/chat-state.service';
 import { AuthService } from '../../services/auth.service';
-import { last, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-chat',
@@ -45,6 +45,20 @@ export class ChatComponent implements OnInit, AfterViewInit {
       });
       // 取出快取訊息或設為空陣列
       this.messages = this.chatState.getMessages(this.receiverId);
+      
+      // 訂閱 WebSocket 訊息
+      this.wsService.getMessages().subscribe(message => {
+        if (!message) return;
+  
+        const isCurrent = message.senderId === this.receiverId || message.receiverId === this.receiverId;
+        const alreadyExists = this.messages.some(m => m.id === message.id);
+  
+        if (isCurrent && !alreadyExists) {
+          this.messages.push(message);
+          this.chatState.setMessages(this.receiverId, [...this.messages]);
+          this.scrollToBottom();
+        }
+      });
 
       // 從後端撈歷史訊息
       this.http.get<Message[]>(`/api/messages/history?user1=${this.senderId}&user2=${this.receiverId}`)
@@ -58,19 +72,6 @@ export class ChatComponent implements OnInit, AfterViewInit {
 
     });
 
-    // 訂閱 WebSocket 訊息
-    this.wsService.getMessages().subscribe(message => {
-      if (!message) return;
-
-      const isCurrent = message.senderId === this.receiverId || message.receiverId === this.receiverId;
-      const alreadyExists = this.messages.some(m => m.id === message.id);
-
-      if (isCurrent && !alreadyExists) {
-        this.messages.push(message);
-        this.chatState.setMessages(this.receiverId, [...this.messages]);
-        this.scrollToBottom();
-      }
-    });
   }
 
   scrollToBottom(): void {
@@ -154,5 +155,6 @@ export class ChatComponent implements OnInit, AfterViewInit {
 
   ngOnDestroy(): void {
     this.messageSub?.unsubscribe();
+    this.chatMessagesRef?.nativeElement.removeEventListener('scroll', this.handleScroll.bind(this));
   }
 }

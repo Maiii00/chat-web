@@ -5,6 +5,9 @@
         class="chat-preview"
         (click)="openChat(convo.userId)"
     >
-        <div class="chat-username">{{ convo.username }}</div>
-    </div>
+        <div class="chat-content">
+            <div class="chat-username">{{ convo.username }}</div>
+            <div class="chat-lastMessage">{{ convo.lastMessage }}</div>
+        </div>
+    </div>       
 </div>
