@@ -26,7 +26,7 @@ export class AppComponent {
       this.messages.push(message);
     });
 
-    this.router.events.subscribe(() => {
+    this.router.events.subscribe(event => {
       const url = this.router.url;
       this.showLayout = !(url.includes('/login') || url.includes('/register'));
     });

@@ -1,20 +1,24 @@
 <nav class="navbar">
-    <button class="menu-btn" (click)="toggleSidebar.emit()">☰</button>
+  <button class="menu-btn" (click)="toggleSidebar.emit()">☰</button>
+
+  <input
+    class="search-input"
+    type="text"
+    placeholder="搜尋用戶"
+    [(ngModel)]="searchText"
+    (input)="onSearch()"
+  />
   
-    <input
-      class="search-input"
-      type="text"
-      placeholder="搜尋用戶"
-      [(ngModel)]="searchText"
-      (input)="onSearch()"
-    />
-    
-    <button class="logout-btn" (click)="onLogout()">登出</button>
-  </nav>
+  <button class="logout-btn" (click)="onLogout()">登出</button>
+</nav>
   
-  <ul *ngIf="searchResults.length > 0" class="search-dropdown">
-    <li *ngFor="let user of searchResults" (click)="openChat(user)">
-      {{ user.username }}
-    </li>
-  </ul>
+<ul *ngIf="searchText && searchResults.length > 0" class="search-dropdown">
+  <li *ngFor="let user of searchResults" (click)="openChat(user)">
+    {{ user.username }}
+  </li>
+</ul>
+
+<div *ngIf="searchText && searchResults.length === 0" class="search-no-result">
+  找不到用戶
+</div>
   

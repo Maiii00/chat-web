@@ -35,7 +35,12 @@ export class RegisterComponent {
           alert('註冊成功');
           this.router.navigate(['/login'])
         },
-        error: (err) => alert('註冊失敗:' + err.error),
+        error: (err) => {
+          const message = typeof err.error === 'string'
+            ? err.error 
+            : err.error?.message || '未知錯誤'
+          alert('註冊失敗: ' + message);
+        },
       });
   }
 }
