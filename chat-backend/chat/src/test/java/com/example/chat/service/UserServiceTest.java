@@ -18,9 +18,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.example.chat.config.jwt.JwtUtil;
 import com.example.chat.model.User;
 import com.example.chat.repository.UserRepository;
-import com.example.chat.security.JwtUtil;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {

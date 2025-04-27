@@ -1,4 +1,4 @@
-package com.example.chat.config;
+package com.example.chat.config.websocket;
 
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;

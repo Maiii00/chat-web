@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,8 +20,9 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
+
+import com.example.chat.config.rabbitMQ.RabbitMQConfig;
 
 @RequiredArgsConstructor
 @Service
@@ -30,6 +32,13 @@ public class MessageService {
     private final UserRepository userRepository;
     private final ChatCacheService chatCacheService;
     private final ObjectMapper objectMapper;
+    private final RabbitTemplate rabbitTemplate;
+
+
+    // 訊息傳送到rabbitMQ
+    public void sendMessageToQueue(Message message) {
+        rabbitTemplate.convertAndSend(RabbitMQConfig.CHAT_QUEUE, message);
+    }
 
     // 儲存訊息（存 MongoDB + Redis）
     public Message saveMessage(Message message) {
@@ -105,22 +114,6 @@ public class MessageService {
         }
 
         return new ArrayList<>(chatPartners);
-    }
-
-    // 查詢單一紀錄
-    public Optional<Message> getMessageById(String id) {
-        return messageRepository.findById(id);
-    }
-
-    // 刪除訊息（刪 MongoDB + Redis）
-    public void deleteMessage(String id) {
-        Optional<Message> messageOptional = messageRepository.findById(id);
-        messageOptional.ifPresent(message -> {
-            messageRepository.deleteById(id);
-
-            // 刪除 Redis 快取
-            chatCacheService.deleteMessageFromCache(message);
-        });
     }
 
 }

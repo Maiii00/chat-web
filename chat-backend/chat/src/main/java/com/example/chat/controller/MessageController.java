@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -25,23 +24,16 @@ public class MessageController {
 
     private final UserRepository userRepository;
     private final MessageService messageService;
-    private final SimpMessagingTemplate messagingTemplate;
 
     // WebSocket 私聊訊息處理
     @MessageMapping("/private") // 客戶端發送到 "/app/private"
     public void sendToUser(@Payload Message message) {
-        Message saved = messageService.saveMessage(message); // 儲存 MongoDB + Redis + 未讀計數
-        messagingTemplate.convertAndSendToUser(
-            message.getReceiverId(), "/queue/messages", saved
-        );
-        messagingTemplate.convertAndSendToUser(
-            message.getSenderId(), "/queue/messages", saved
-        );
+        messageService.sendMessageToQueue(message);
     }
 
     // 送出訊息
     @PostMapping
-    public ResponseEntity<Message> sendMessage(@RequestBody Message message, Principal principal) {
+    public ResponseEntity<Void> sendMessage(@RequestBody Message message, Principal principal) {
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -53,7 +45,8 @@ public class MessageController {
                                         .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found"));
         
         message.setSenderId(senderId);
-        return ResponseEntity.ok(messageService.saveMessage(message));
+        messageService.sendMessageToQueue(message);
+        return ResponseEntity.noContent().build();
     }
 
     // 查詢歷史訊息(分頁)
@@ -88,20 +81,5 @@ public class MessageController {
         
         List<String> chatList = messageService.getChatList(userId);
         return ResponseEntity.ok(chatList);
-    }
-
-    // 私聊刪除訊息
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePrivateMessage(@PathVariable String id) {
-        Optional<Message> messageOptional = messageService.getMessageById(id);
-        messageOptional.ifPresent(message -> {
-            messageService.deleteMessage(id);
-
-            // 通知 sender 和 receiver
-            messagingTemplate.convertAndSendToUser(message.getSenderId(), "/queue/delete", id);
-            messagingTemplate.convertAndSendToUser(message.getReceiverId(), "/queue/delete", id);
-        });
-
-        return ResponseEntity.noContent().build();
     }
 }

@@ -4,8 +4,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.chat.config.jwt.JwtUtil;
 import com.example.chat.model.User;
-import com.example.chat.security.JwtUtil;
 import com.example.chat.service.LogoutService;
 import com.example.chat.service.UserService;
 
@@ -35,9 +35,9 @@ public class UserController {
 
     // 註冊新用戶
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody User user) {
-        String result = userService.register(user);
-        if (result.equals("Username already taken")) {
+    public ResponseEntity<Map<String, String>> register(@RequestBody User user) {
+        Map<String, String> result = userService.register(user);
+        if (result.containsKey("error")) {
             return ResponseEntity.badRequest().body(result);
         }
         return ResponseEntity.ok(result);

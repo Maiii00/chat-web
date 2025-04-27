@@ -101,18 +101,16 @@ export class ChatComponent implements OnInit, AfterViewInit {
       
       // 傳送給後端儲存
       this.http.post<Message>('/api/messages', message, { headers }).subscribe({
-        next: saved => {
-          // 前端顯示訊息（已儲存版本）
-          this.messages.push(saved);
+        next: () => {
+
+          this.newMessage = '';
           this.chatState.setMessages(this.receiverId, [...this.messages]);
 
-          // 通知對方 (仍然透過 WebSocket)
-          this.wsService.sendMessage('/app/private', saved);
+          // // 通知對方 (仍然透過 WebSocket)
+          // this.wsService.sendMessage('/app/private', saved);
 
           // 發送事件讓 Sidebar 可以重新撈取聊天室清單
           this.chatState.notifyConversationUpdate();
-
-          this.newMessage = '';
           this.scrollToBottom();
         },
         error: err => console.error('sendMessage error', err)

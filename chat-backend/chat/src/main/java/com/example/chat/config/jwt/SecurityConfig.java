@@ -1,4 +1,4 @@
-package com.example.chat.config;
+package com.example.chat.config.jwt;
 
 import java.util.List;
 
@@ -10,8 +10,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-
-import com.example.chat.security.JwtFilter;
 
 import lombok.RequiredArgsConstructor;
 

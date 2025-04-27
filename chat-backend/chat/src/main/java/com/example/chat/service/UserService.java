@@ -7,9 +7,9 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.example.chat.config.jwt.JwtUtil;
 import com.example.chat.model.User;
 import com.example.chat.repository.UserRepository;
-import com.example.chat.security.JwtUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,16 +20,16 @@ public class UserService {
     private final JwtUtil jwtUtil;
     
     // 註冊新用戶
-    public String register(User user) {
+    public Map<String, String> register(User user) {
         // 檢查用戶名是否已存在
         Optional<User> existingUser = userRepository.findByUsername(user.getUsername());
         if (existingUser.isPresent()) {
-            return "Username already taken";
+            return Map.of("error", "Username already taken");
         }
 
         user.setPassword(user.getPassword());
         userRepository.save(user);
-        return "User registered successfully";
+        return Map.of("message", "User registered successfully");
     }
 
     // 用戶登入

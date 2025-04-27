@@ -5,6 +5,16 @@ services:
     ports:
       - "6379:6379"
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
   backend:
     build: .
     container_name: chat-backend
@@ -12,5 +22,7 @@ services:
       - "8080:8080"
     environment:
       - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_RABBITMQ_HOST=rabbitmq
     depends_on:
       - redis
+      - rabbitmq

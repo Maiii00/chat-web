@@ -1,4 +1,4 @@
-package com.example.chat.security;
+package com.example.chat.config.jwt;
 
 import java.io.IOException;
 import java.util.List;

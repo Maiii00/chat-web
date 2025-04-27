@@ -1,4 +1,4 @@
-package com.example.chat.security;
+package com.example.chat.config.jwt;
 
 import java.util.Base64;
 import java.util.Date;

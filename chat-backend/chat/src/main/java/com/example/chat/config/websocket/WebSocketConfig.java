@@ -1,4 +1,4 @@
-package com.example.chat.config;
+package com.example.chat.config.websocket;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
