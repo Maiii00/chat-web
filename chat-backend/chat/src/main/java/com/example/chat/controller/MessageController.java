@@ -61,12 +61,6 @@ public class MessageController {
         return ResponseEntity.ok(messages);
     }
 
-    // 查詢單一訊息
-    @GetMapping("/{id}")
-    public ResponseEntity<Optional<Message>> getMessageById(@PathVariable String id) {
-        return ResponseEntity.ok(messageService.getMessageById(id));
-    }
-
     // 查詢用戶的聊天列表
     @GetMapping("/chat-list")
     public ResponseEntity<List<String>> getMessageList(Principal principal) {

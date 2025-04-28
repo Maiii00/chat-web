@@ -19,7 +19,7 @@ export class WebSocketService {
     const userId = this.auth.getUserId();
 
     this.stompClient = new Client({
-        webSocketFactory: () => new SockJS('http://localhost:8080/ws'), // 使用 SockJS 建立 WebSocket 連線
+        webSocketFactory: () => new SockJS('/ws'), // 使用 SockJS 建立 WebSocket 連線
         reconnectDelay: 5000, // 斷線後 5 秒自動重連
         connectHeaders: {
           userId: userId ?? '', // 必須要傳給後端，WebSocketUserInterceptor 才能設定 Principal
