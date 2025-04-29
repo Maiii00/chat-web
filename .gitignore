@@ -1,6 +1,7 @@
 # Maven build
 HELP.md
 target/
+!target/chat-0.0.1-SNAPSHOT.jar
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -36,6 +37,3 @@ chat-frontend/.angular/
 chat-frontend/.next/
 chat-frontend/.output/
 chat-frontend/.cache/
-
-# Fly.io config
-fly.toml
