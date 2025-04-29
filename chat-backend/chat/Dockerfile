@@ -1,6 +1,6 @@
 FROM openjdk:17-jdk-slim
 
 WORKDIR /app
-COPY --from=builder /app/target/chat-0.0.1-SNAPSHOT.jar app.jar
+COPY chat-backend/chat/target/chat-0.0.1-SNAPSHOT.jar app.jar
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
