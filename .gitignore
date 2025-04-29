@@ -1,33 +1,41 @@
+# Maven build
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### STS ###
+# IDEs
 .apt_generated
 .classpath
 .factorypath
 .project
-.settings
+.settings/
 .springBeans
 .sts4-cache
-
-### IntelliJ IDEA ###
-.idea
+.idea/
+.vscode/
 *.iws
 *.iml
 *.ipr
 
-### NetBeans ###
+# NetBeans
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
+/build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### VS Code ###
-.vscode/
+# Node.js / Frontend build
+chat-frontend/node_modules/
+chat-frontend/dist/
+chat-frontend/.angular/
+chat-frontend/.next/
+chat-frontend/.output/
+chat-frontend/.cache/
+
+# Fly.io config
+fly.toml
