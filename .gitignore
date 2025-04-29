@@ -1,7 +1,7 @@
 # Maven build
 HELP.md
-target/
-!target/chat-0.0.1-SNAPSHOT.jar
+chat-backend/chat/target/
+!chat-backend/chat/target/chat-0.0.1-SNAPSHOT.jar
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
