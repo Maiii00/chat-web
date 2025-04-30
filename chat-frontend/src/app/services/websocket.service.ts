@@ -3,7 +3,7 @@ import { Client, Message } from '@stomp/stompjs';
 import { BehaviorSubject, Observable } from 'rxjs';
 import SockJS from 'sockjs-client';
 import { AuthService } from './auth.service';
-import { environment } from '../../enviroments/enviroment.prod';
+import { environment } from '../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root',
