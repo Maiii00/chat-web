@@ -26,7 +26,7 @@ public class SecurityConfig {
             .cors(cors -> cors
             .configurationSource(request -> {
                 CorsConfiguration config = new CorsConfiguration();
-                config.setAllowedOrigins(List.of(
+                config.setAllowedOriginPatterns(List.of(
                     "http://localhost:4200",
                     "https://chat-web-dusky.vercel.app"
                 ));
