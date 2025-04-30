@@ -3,6 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { environment } from '../../../environments/environment.prod';
+
+interface Token {
+  accessToken: string;
+  refreshToken: string;
+}
 
 @Component({
   selector: 'app-login',
@@ -25,11 +31,11 @@ export class LoginComponent {
   }
 
   login() {
-    this.http.post('/api/users/login', {
+    this.http.post<Token>(`${environment.apiBaseUrl}/users/login`, {
       username: this.username,
       password: this.password,
     }).subscribe({
-      next: (res: any) => {
+      next: (res: Token) => {
         localStorage.setItem('accessToken', res.accessToken);
         localStorage.setItem('refreshToken', res.refreshToken);
         this.router.navigate(['/']);

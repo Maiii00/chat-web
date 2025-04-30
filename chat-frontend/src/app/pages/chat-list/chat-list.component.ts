@@ -7,6 +7,7 @@ import { AuthService } from '../../services/auth.service';
 import { Message } from '../../models/message';
 import { firstValueFrom, Subscription } from 'rxjs';
 import { ChatStateService } from '../../services/chat-state.service';
+import { environment } from '../../../environments/environment.prod';
 
 @Component({
   selector: 'app-chat-list',
@@ -38,13 +39,13 @@ export class ChatListComponent implements OnInit {
     const senderId = this.auth.getUserId();
     if (!senderId) return;
   
-    this.http.get<string[]>(`/api/messages/chat-list`).subscribe(async userIds => {
+    this.http.get<string[]>(`${environment.apiBaseUrl}/messages/chat-list`).subscribe(async userIds => {
       const results: Conversation[] = [];
   
       for (const userId of userIds) {
-        const userData = await firstValueFrom(this.http.get<{ username: string }>(`/api/users/${userId}`));
+        const userData = await firstValueFrom(this.http.get<{ username: string }>(`${environment.apiBaseUrl}/users/${userId}`));
         const messages = await firstValueFrom(
-          this.http.get<Message[]>(`/api/messages/history?user1=${senderId}&user2=${userId}&page=0&size=1`)
+          this.http.get<Message[]>(`${environment.apiBaseUrl}/messages/history?user1=${senderId}&user2=${userId}&page=0&size=1`)
         );
   
         results.push({

@@ -8,6 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { ChatStateService } from '../../services/chat-state.service';
 import { AuthService } from '../../services/auth.service';
 import { Subscription } from 'rxjs';
+import { environment } from '../../../environments/environment.prod';
 
 @Component({
   selector: 'app-chat',
@@ -40,7 +41,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
     this.route.paramMap.subscribe(params => {
       this.receiverId = params.get('userId') || '';
 
-      this.http.get<{ username: string }>(`/api/users/${this.receiverId}`).subscribe(data => {
+      this.http.get<{ username: string }>(`${environment.apiBaseUrl}/users/${this.receiverId}`).subscribe(data => {
         this.receiverUsername = data.username;
       });
       // 取出快取訊息或設為空陣列
@@ -61,7 +62,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
       });
 
       // 從後端撈歷史訊息
-      this.http.get<Message[]>(`/api/messages/history?user1=${this.senderId}&user2=${this.receiverId}`)
+      this.http.get<Message[]>(`${environment.apiBaseUrl}/messages/history?user1=${this.senderId}&user2=${this.receiverId}`)
       .subscribe(history => {
         const existingIds = new Set(this.messages.map(m => m.id));
         const newOnes = history.filter(m => !existingIds.has(m.id));
@@ -100,7 +101,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
 
       
       // 傳送給後端儲存
-      this.http.post<Message>('/api/messages', message, { headers }).subscribe({
+      this.http.post<Message>(`${environment.apiBaseUrl}/messages`, message, { headers }).subscribe({
         next: () => {
 
           this.newMessage = '';
@@ -119,7 +120,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
   loadMore(): void {
     this.currentPage += 1;
 
-    this.http.get<Message[]>(`/api/messages/history?user1=${this.senderId}&user2=${this.receiverId}&page=${this.currentPage}&size=20`)
+    this.http.get<Message[]>(`${environment.apiBaseUrl}/messages/history?user1=${this.senderId}&user2=${this.receiverId}&page=${this.currentPage}&size=20`)
       .subscribe(history => {
         const existingIds = new Set(this.messages.map(m => m.id));
         const newOnes = history.filter(m => !existingIds.has(m.id));

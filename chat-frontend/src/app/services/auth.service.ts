@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, map, Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
@@ -60,7 +61,7 @@ export class AuthService {
 
     // 如果 token 存在，通知後端讓它失效
     if (token) {
-      this.http.post('/api/users/logout', {}, {
+      this.http.post(`${environment.apiBaseUrl}/users/logout`, {}, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -87,7 +88,7 @@ export class AuthService {
 
   refreshAccessToken(refreshToken: string): Observable<string | null> {
     console.log('發送 refresh 請求，token:', refreshToken);
-    return this.http.post<{ accessToken: string }>('/api/users/refresh', { refreshToken }).pipe(
+    return this.http.post<{ accessToken: string }>(`${environment.apiBaseUrl}/users/refresh`, { refreshToken }).pipe(
       map(res => res.accessToken),
       // 如果沒有拿到新的 accessToken，就回傳 null
       catchError((err) => {

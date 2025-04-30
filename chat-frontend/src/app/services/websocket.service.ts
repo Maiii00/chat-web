@@ -3,6 +3,7 @@ import { Client, Message } from '@stomp/stompjs';
 import { BehaviorSubject, Observable } from 'rxjs';
 import SockJS from 'sockjs-client';
 import { AuthService } from './auth.service';
+import { environment } from '../../enviroments/enviroment.prod';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +20,7 @@ export class WebSocketService {
     const userId = this.auth.getUserId();
 
     this.stompClient = new Client({
-        webSocketFactory: () => new SockJS('/ws'), // 使用 SockJS 建立 WebSocket 連線
+        webSocketFactory: () => new SockJS(environment.wsUrl), // 使用 SockJS 建立 WebSocket 連線
         reconnectDelay: 5000, // 斷線後 5 秒自動重連
         connectHeaders: {
           userId: userId ?? '', // 必須要傳給後端，WebSocketUserInterceptor 才能設定 Principal

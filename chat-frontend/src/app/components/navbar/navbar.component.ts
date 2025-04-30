@@ -4,6 +4,12 @@ import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
+import { environment } from '../../../environments/environment.prod';
+
+interface SearchResult {
+  id: string;
+  username: string;
+}
 
 @Component({
   selector: 'app-navbar',
@@ -20,7 +26,7 @@ export class NavbarComponent {
   private auth = inject(AuthService);
 
   searchText = '';
-  searchResults: any[] = [];
+  searchResults: SearchResult[] = [];
 
   onLogout() {
     this.auth.logout();
@@ -32,13 +38,13 @@ export class NavbarComponent {
       return;
     }
 
-    this.http.get<any[]>(`/api/users/search?keyword=${this.searchText}`).subscribe({
+    this.http.get<SearchResult[]>(`${environment.apiBaseUrl}/users/search?keyword=${this.searchText}`).subscribe({
       next: users => this.searchResults = users,
       error: () => this.searchResults = []
     });
   }
 
-  openChat(user: any) {
+  openChat(user: SearchResult) {
     this.router.navigate(['/chat', user.id]);
     this.searchText = '';
     this.searchResults = [];

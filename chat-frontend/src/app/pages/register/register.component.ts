@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { environment } from '../../../environments/environment.prod';
 
 @Component({
   selector: 'app-register',
@@ -26,7 +27,7 @@ export class RegisterComponent {
     }
 
     this.http
-      .post('/api/users/register', {
+      .post(`${environment.apiBaseUrl}/users/register`, {
         username: this.username,
         password: this.password,
       })

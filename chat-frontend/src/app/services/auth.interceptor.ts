@@ -3,11 +3,12 @@ import { inject } from '@angular/core';
 import { AuthService } from './auth.service';
 import { HttpErrorResponse, HttpRequest, HttpHandlerFn } from '@angular/common/http';
 import { switchMap, catchError, throwError, of } from 'rxjs';
+import { environment } from '../../environments/environment.prod';
 
 export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: HttpHandlerFn) => {
   const authService = inject(AuthService);
 
-  if (req.url.includes('/api/users/refresh')) {
+  if (req.url.includes(`${environment.apiBaseUrl}/users/refresh`)) {
     return next(req);
   }
   
