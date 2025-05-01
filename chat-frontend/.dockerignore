@@ -31,7 +31,6 @@ HELP.md
 # NetBeans
 nbproject/private/
 nbbuild/
-dist/
 nbdist/
 .nb-gradle/
 build/
