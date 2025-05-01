@@ -32,7 +32,6 @@ chat-backend/chat/target/
 
 # Node.js / Frontend build
 chat-frontend/node_modules/
-chat-frontend/dist/
 chat-frontend/.angular/
 chat-frontend/.next/
 chat-frontend/.output/
