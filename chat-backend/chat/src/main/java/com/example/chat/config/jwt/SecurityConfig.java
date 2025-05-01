@@ -28,7 +28,8 @@ public class SecurityConfig {
                 CorsConfiguration config = new CorsConfiguration();
                 config.setAllowedOriginPatterns(List.of(
                     "http://localhost:4200",
-                    "https://chat-web-dusky.vercel.app"
+                    "https://chat-production-70dc.up.railway.app"
+                    
                 ));
                 config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                 config.setAllowedHeaders(List.of("*"));

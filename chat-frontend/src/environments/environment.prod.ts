@@ -1,6 +1,6 @@
 export const environment = {
     production: true,
-    apiBaseUrl: '/api',
-    wsUrl: '/ws'
+    apiBaseUrl: 'http://chat-web.railway.internal/api',
+    wsUrl: 'ws://chat-web.railway.internal/ws'
 };
   
