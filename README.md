@@ -44,6 +44,7 @@ user2 pass2
 ---
 
 1. 使用者註冊、登入、登出
+
 ![註冊頁面](images/image-1.png)
 
 ![登入頁面](images/image.png)
@@ -52,12 +53,14 @@ user2 pass2
 - 登出功能位於導覽列，執行登出後會將原本 Token 加入 Redis 黑名單。
 
 2. 私人聊天（支援聊天室列表）
+
 ![聊天室頁面](images/image-2.png)
 - 聊天室清單依照最近訊息排序，支援即時更新。
 - 使用 WebSocket + RabbitMQ 傳送訊息，實時更新對話內容。
 - 後端支援分頁查詢歷史訊息。
 
 3. 前後端部署
+
 ![部署架構圖](images/image-3.png)
 - 前後端使用 Dockerfile 容器化並部署於 Railway
 - 前端使用 NGINX 進行反向代理，後端暴露 WebSocket 與 API。
