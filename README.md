@@ -1,5 +1,7 @@
 # 即時聊天室系統 (Real-Time Chat App)
 
+[chat-production-70dc.up.railway.app](https://chat-production-70dc.up.railway.app)
+
 這是一個基於 Spring Boot + Angular 的全端即時聊天室應用，支援 JWT 認證、RabbitMQ 傳訊、WebSocket 即時通訊、Redis 快取與 MongoDB 儲存，並實作分頁加載歷史訊息。
 
 ---
